@@ -1,0 +1,705 @@
+[
+  {
+    "tags": [],
+    "description": {
+      "full": "<p>The Fortune object.</p>",
+      "summary": "<p>The Fortune object.</p>",
+      "body": ""
+    },
+    "ignore": true,
+    "code": "function Fortune() {\n  this._init.apply(this, arguments);\n}",
+    "ctx": {
+      "type": "function",
+      "name": "Fortune",
+      "string": "Fortune()"
+    }
+  },
+  {
+    "tags": [],
+    "description": {
+      "full": "<p>An object that is passed in to the Fortune constructor, which contains all of the configuration options.</p>\n\n<h3>Database setup</h3>\n\n<ul>\n<li><code>adapter</code>: may be either \"mongodb\", \"mysql\", \"psql\", or \"sqlite\". Default: \"mongodb\".</li>\n<li><code>db</code>: the name of the database to use. Default: \"fortune\".</li>\n<li><code>host</code>: the address of the database machine. Default: \"localhost\".</li>\n<li><code>port</code>: the port of the database machine. Do not set this unless you do not plan on using the default port for the database.</li>\n<li><code>username</code>: username for logging into the database. This may be optional for MongoDB.</li>\n<li><code>password</code>: password for logging into the database. This may be optional for MongoDB.</li>\n<li><code>flags</code>: an object containing additional options to pass to the adapter.</li>\n</ul>\n\n<h3>Fortune setup</h3>\n\n<ul>\n<li><code>baseUrl</code>: if this is set, then your API gets upgraded to URL-style JSON API.</li>\n<li><code>namespace</code>: optional namespace for your API, i.e. <code>api/v1</code>.</li>\n<li><code>cors</code>: boolean value indicating whether or not to enable Cross Origin Resource Sharing (CORS). Default: true.</li>\n<li><code>production</code>: boolean value indicating whether or not to strip spaces from responses. Default: false.</li>\n</ul>\n\n<p><em>Note: in order to use the relational database adapters, you must also install the node.js drivers from <code>npm</code>: <code>mysql</code> for MySQL, <code>pg</code> for Postgres, and <code>sqlite3</code> for SQLite.</em></p>",
+      "summary": "<p>An object that is passed in to the Fortune constructor, which contains all of the configuration options.</p>",
+      "body": "<h3>Database setup</h3>\n\n<ul>\n<li><code>adapter</code>: may be either \"mongodb\", \"mysql\", \"psql\", or \"sqlite\". Default: \"mongodb\".</li>\n<li><code>db</code>: the name of the database to use. Default: \"fortune\".</li>\n<li><code>host</code>: the address of the database machine. Default: \"localhost\".</li>\n<li><code>port</code>: the port of the database machine. Do not set this unless you do not plan on using the default port for the database.</li>\n<li><code>username</code>: username for logging into the database. This may be optional for MongoDB.</li>\n<li><code>password</code>: password for logging into the database. This may be optional for MongoDB.</li>\n<li><code>flags</code>: an object containing additional options to pass to the adapter.</li>\n</ul>\n\n<h3>Fortune setup</h3>\n\n<ul>\n<li><code>baseUrl</code>: if this is set, then your API gets upgraded to URL-style JSON API.</li>\n<li><code>namespace</code>: optional namespace for your API, i.e. <code>api/v1</code>.</li>\n<li><code>cors</code>: boolean value indicating whether or not to enable Cross Origin Resource Sharing (CORS). Default: true.</li>\n<li><code>production</code>: boolean value indicating whether or not to strip spaces from responses. Default: false.</li>\n</ul>\n\n<p><em>Note: in order to use the relational database adapters, you must also install the node.js drivers from <code>npm</code>: <code>mysql</code> for MySQL, <code>pg</code> for Postgres, and <code>sqlite3</code> for SQLite.</em></p>"
+    },
+    "ignore": false,
+    "code": "Fortune.prototype.options = {};",
+    "ctx": {
+      "type": "property",
+      "constructor": "Fortune",
+      "cons": "Fortune",
+      "name": "options",
+      "value": "{}",
+      "string": "Fortune.prototype.options"
+    }
+  },
+  {
+    "tags": [
+      {
+        "type": "api",
+        "visibility": "private"
+      }
+    ],
+    "description": {
+      "full": "<p>Default application settings.</p>",
+      "summary": "<p>Default application settings.</p>",
+      "body": ""
+    },
+    "isPrivate": true,
+    "ignore": false,
+    "code": "Fortune.prototype._defaults = {\n\n  // database setup\n  adapter: 'mongodb',\n  host: 'localhost',\n  port: null,\n  db: 'fortune',\n  username: '',\n  password: '',\n  flags: {},\n\n  // fortune options\n  baseUrl: '',\n  namespace: '',\n  cors: true,\n  production: false\n\n};",
+    "ctx": {
+      "type": "property",
+      "constructor": "Fortune",
+      "cons": "Fortune",
+      "name": "_defaults",
+      "value": "{",
+      "string": "Fortune.prototype._defaults"
+    }
+  },
+  {
+    "tags": [
+      {
+        "type": "api",
+        "visibility": "private"
+      },
+      {
+        "type": "param",
+        "types": [
+          "Object"
+        ],
+        "name": "options",
+        "description": ""
+      }
+    ],
+    "description": {
+      "full": "<p>Constructor method.</p>",
+      "summary": "<p>Constructor method.</p>",
+      "body": ""
+    },
+    "isPrivate": true,
+    "ignore": false,
+    "code": "Fortune.prototype._init = function(options) {\n\n  // Initialize options.\n  options = typeof options == 'object' ? options : {};\n  for(var key in this._defaults) {\n    if(!options.hasOwnProperty(key))\n      options[key] = this._defaults[key];\n  }\n  this.options = options;\n\n  // Create the underlying express framework instance.\n  this.express = express();\n\n  // Setup express.\n  if(typeof options.cors == 'boolean' && options.cors) {\n    this.express.use(allowCrossDomain);\n  }\n  this.express.disable('x-powered-by');\n  this.express.use(express.bodyParser());\n\n  // Create a database adapter instance.\n  this.adapter = new Adapter({\n    adapter: options.adapter,\n    host: options.host,\n    port: options.port,\n    db: options.db,\n    username: options.username,\n    password: options.password,\n    flags: options.flags\n  });\n\n};",
+    "ctx": {
+      "type": "method",
+      "constructor": "Fortune",
+      "cons": "Fortune",
+      "name": "_init",
+      "string": "Fortune.prototype._init()"
+    }
+  },
+  {
+    "tags": [
+      {
+        "type": "param",
+        "types": [
+          "String"
+        ],
+        "name": "name",
+        "description": "the name of the resource"
+      },
+      {
+        "type": "param",
+        "types": [
+          "Object"
+        ],
+        "name": "schema",
+        "description": "the schema object to add"
+      },
+      {
+        "type": "param",
+        "types": [
+          "Object"
+        ],
+        "name": "options",
+        "description": "additional options to pass to the schema"
+      },
+      {
+        "type": "return",
+        "types": [
+          "this"
+        ],
+        "description": ""
+      }
+    ],
+    "description": {
+      "full": "<p>Define a resource and setup routes simultaneously. A schema field may be either a native type, a plain object, or a string that refers to a related resource.</p>\n\n<p>Valid native types: <code>String</code>, <code>Number</code>, <code>Boolean</code>, <code>Date</code>, <code>Array</code>, <code>Buffer</code></p>\n\n<p>Alternatively, the object format must be as follows:</p>\n\n<div class=\"highlight\"><pre lang=\"javascript\">{type: String} // no association\n{ref: 'relatedResource', inverse: 'relatedKey'} // \"belongs to\" association to \"relatedKey\" key on \"relatedResource\"\n[{ref: 'anotherResource', inverse: 'someKey'}] // \"has many\" association to \"someKey\" on \"anotherResource\"\n</pre></div>",
+      "summary": "<p>Define a resource and setup routes simultaneously. A schema field may be either a native type, a plain object, or a string that refers to a related resource.</p>",
+      "body": "<p>Valid native types: <code>String</code>, <code>Number</code>, <code>Boolean</code>, <code>Date</code>, <code>Array</code>, <code>Buffer</code></p>\n\n<p>Alternatively, the object format must be as follows:</p>\n\n<div class=\"highlight\"><pre lang=\"javascript\">{type: String} // no association\n{ref: 'relatedResource', inverse: 'relatedKey'} // \"belongs to\" association to \"relatedKey\" key on \"relatedResource\"\n[{ref: 'anotherResource', inverse: 'someKey'}] // \"has many\" association to \"someKey\" on \"anotherResource\"\n</pre></div>"
+    },
+    "isPrivate": false,
+    "ignore": false,
+    "code": "Fortune.prototype.resource = function(name, schema, options) {\n  var _this = this;\n  name = inflect.underscore(name);\n\n  this._resource = name;\n  if(typeof schema != 'object') return this;\n  if(this.adapter.model(name)) {\n    console.warn('Warning: resource \"' + name + '\" was already defined.');\n    return this;\n  }\n\n  this.adapter.awaitConnection().then(function() {\n    schema = _this._scrubSchema(schema);\n\n    // Store a copy of the input.\n    _this._schema[name] = _.clone(schema);\n\n    schema = _this.adapter.schema(name, schema, options);\n    _this._route(name, _this.adapter.model(name, schema));\n  }, function(error) {\n    throw error;\n  });\n  return this;\n};",
+    "ctx": {
+      "type": "method",
+      "constructor": "Fortune",
+      "cons": "Fortune",
+      "name": "resource",
+      "string": "Fortune.prototype.resource()"
+    }
+  },
+  {
+    "tags": [
+      {
+        "type": "api",
+        "visibility": "private"
+      },
+      {
+        "type": "param",
+        "types": [
+          "Object"
+        ],
+        "name": "schema",
+        "description": ""
+      },
+      {
+        "type": "return",
+        "types": [
+          "Object"
+        ],
+        "description": ""
+      }
+    ],
+    "description": {
+      "full": "<p>Scrub invalid keys from a schema.</p>",
+      "summary": "<p>Scrub invalid keys from a schema.</p>",
+      "body": ""
+    },
+    "isPrivate": true,
+    "ignore": false,
+    "code": "Fortune.prototype._scrubSchema = function(schema) {\n  ['id', 'href', 'links'].forEach(function(reservedKey) {\n    if(schema.hasOwnProperty(reservedKey)) {\n      delete schema[reservedKey];\n      console.warn('Reserved key \"' + reservedKey + '\" is not allowed.');\n    }\n  });\n  return schema;\n};",
+    "ctx": {
+      "type": "method",
+      "constructor": "Fortune",
+      "cons": "Fortune",
+      "name": "_scrubSchema",
+      "string": "Fortune.prototype._scrubSchema()"
+    }
+  },
+  {
+    "tags": [
+      {
+        "type": "api",
+        "visibility": "private"
+      },
+      {
+        "type": "param",
+        "types": [
+          "String"
+        ],
+        "name": "name",
+        "description": ""
+      },
+      {
+        "type": "param",
+        "types": [
+          "Function"
+        ],
+        "name": "fn",
+        "description": ""
+      },
+      {
+        "type": "param",
+        "types": [
+          "String"
+        ],
+        "name": "stage",
+        "description": ""
+      }
+    ],
+    "description": {
+      "full": "<p>Internal method to add transforms on a resource.</p>",
+      "summary": "<p>Internal method to add transforms on a resource.</p>",
+      "body": ""
+    },
+    "isPrivate": true,
+    "ignore": false,
+    "code": "Fortune.prototype._addTransform = function(name, fn, stage) {\n  var _this = this;\n\n  if(typeof name == 'function') {\n    fn = name;\n    name = this._resource;\n  }\n  if(typeof fn == 'function') {\n    name.split(' ').forEach(function(key) {\n      _this[stage][key] = fn;\n    });\n  }\n};",
+    "ctx": {
+      "type": "method",
+      "constructor": "Fortune",
+      "cons": "Fortune",
+      "name": "_addTransform",
+      "string": "Fortune.prototype._addTransform()"
+    }
+  },
+  {
+    "tags": [
+      {
+        "type": "param",
+        "types": [
+          "String"
+        ],
+        "name": "name",
+        "description": "may be space separated, i.e. 'cat dog human'"
+      },
+      {
+        "type": "param",
+        "types": [
+          "Function"
+        ],
+        "name": "fn",
+        "description": "this method is called within the context of the resource, it has 3 parameters: 2 callbacks to resolve or reject the transform, and the request object."
+      },
+      {
+        "type": "return",
+        "types": [
+          "this"
+        ],
+        "description": ""
+      }
+    ],
+    "description": {
+      "full": "<p>Do something before a resource is saved in the database. The function parameter defines a promise that can be resolved or rejected, and also has a third argument, the request object. Here's a contrived example that stores the Authorization header into the resource:</p>\n\n<div class=\"highlight\"><pre lang=\"javascript\">function(resolve, reject, request) {\n  var authorization = request.get('Authorization');\n  if(!authorization) return reject();\n  this.authorization = authorization;\n  resolve(this);\n}\n</pre></div>",
+      "summary": "<p>Do something before a resource is saved in the database. The function parameter defines a promise that can be resolved or rejected, and also has a third argument, the request object. Here's a contrived example that stores the Authorization header into the resource:</p>",
+      "body": "<div class=\"highlight\"><pre lang=\"javascript\">function(resolve, reject, request) {\n  var authorization = request.get('Authorization');\n  if(!authorization) return reject();\n  this.authorization = authorization;\n  resolve(this);\n}\n</pre></div>"
+    },
+    "isPrivate": false,
+    "ignore": false,
+    "code": "Fortune.prototype.before = function(name, fn) {\n  this._addTransform(name, fn, '_before');\n  return this;\n};",
+    "ctx": {
+      "type": "method",
+      "constructor": "Fortune",
+      "cons": "Fortune",
+      "name": "before",
+      "string": "Fortune.prototype.before()"
+    }
+  },
+  {
+    "tags": [
+      {
+        "type": "param",
+        "types": [
+          "String"
+        ],
+        "name": "name",
+        "description": "may be space separated, i.e. 'cat dog human'"
+      },
+      {
+        "type": "param",
+        "types": [
+          "Function"
+        ],
+        "name": "fn",
+        "description": "this method is called within the context of the resource, it has 3 parameters: 2 callbacks to resolve or reject the transform, and the request object."
+      },
+      {
+        "type": "return",
+        "types": [
+          "this"
+        ],
+        "description": ""
+      }
+    ],
+    "description": {
+      "full": "<p>Do something after a resource is read from the database. Here's a contrived example that hides a <code>password</code> and <code>salt</code> from being exposed:</p>\n\n<div class=\"highlight\"><pre lang=\"javascript\">function(resolve, reject, request) {\n  delete this.password;\n  delete this.salt;\n  resolve(this);\n}\n</pre></div>",
+      "summary": "<p>Do something after a resource is read from the database. Here's a contrived example that hides a <code>password</code> and <code>salt</code> from being exposed:</p>",
+      "body": "<div class=\"highlight\"><pre lang=\"javascript\">function(resolve, reject, request) {\n  delete this.password;\n  delete this.salt;\n  resolve(this);\n}\n</pre></div>"
+    },
+    "isPrivate": false,
+    "ignore": false,
+    "code": "Fortune.prototype.after = function(name, fn) {\n  this._addTransform(name, fn, '_after');\n  return this;\n};",
+    "ctx": {
+      "type": "method",
+      "constructor": "Fortune",
+      "cons": "Fortune",
+      "name": "after",
+      "string": "Fortune.prototype.after()"
+    }
+  },
+  {
+    "tags": [
+      {
+        "type": "param",
+        "types": [
+          "String"
+        ],
+        "name": "[name]",
+        "description": "if no name is passed, the last defined resource is used"
+      },
+      {
+        "type": "param",
+        "types": [
+          "Function"
+        ],
+        "name": "before",
+        "description": "see \"before\" method"
+      },
+      {
+        "type": "param",
+        "types": [
+          "Function"
+        ],
+        "name": "after",
+        "description": "see \"after\" method"
+      },
+      {
+        "type": "return",
+        "types": [
+          "this"
+        ],
+        "description": ""
+      }
+    ],
+    "description": {
+      "full": "<p>Convenience method to define before &amp; after at once.</p>",
+      "summary": "<p>Convenience method to define before &amp; after at once.</p>",
+      "body": ""
+    },
+    "isPrivate": false,
+    "ignore": false,
+    "code": "Fortune.prototype.transform = function(name, before, after) {\n  if(arguments.length < 3) {\n    after = before;\n    before = name;\n    name = this._resource;\n  }\n  this.before(name, before);\n  this.after(name, after);\n  return this;\n};",
+    "ctx": {
+      "type": "method",
+      "constructor": "Fortune",
+      "cons": "Fortune",
+      "name": "transform",
+      "string": "Fortune.prototype.transform()"
+    }
+  },
+  {
+    "tags": [
+      {
+        "type": "param",
+        "types": [
+          "Function"
+        ],
+        "name": "fn",
+        "description": "connect middleware"
+      },
+      {
+        "type": "return",
+        "types": [
+          "this"
+        ],
+        "description": ""
+      }
+    ],
+    "description": {
+      "full": "<p>This accepts a <code>connect</code> middleware function. For more information, <a href=\"http://stephensugden.com/middleware_guide/\">here is a guide for how to write connect middleware</a>.</p>",
+      "summary": "<p>This accepts a <code>connect</code> middleware function. For more information, <a href=\"http://stephensugden.com/middleware_guide/\">here is a guide for how to write connect middleware</a>.</p>",
+      "body": ""
+    },
+    "isPrivate": false,
+    "ignore": false,
+    "code": "Fortune.prototype.use = function() {\n  this.express.use.apply(this.express, arguments);\n  return this;\n};",
+    "ctx": {
+      "type": "method",
+      "constructor": "Fortune",
+      "cons": "Fortune",
+      "name": "use",
+      "string": "Fortune.prototype.use()"
+    }
+  },
+  {
+    "tags": [
+      {
+        "type": "param",
+        "types": [
+          "Number"
+        ],
+        "name": "port",
+        "description": "the port number to use"
+      },
+      {
+        "type": "return",
+        "types": [
+          "this"
+        ],
+        "description": ""
+      }
+    ],
+    "description": {
+      "full": "<p>Start the API by listening on the specified port.</p>",
+      "summary": "<p>Start the API by listening on the specified port.</p>",
+      "body": ""
+    },
+    "isPrivate": false,
+    "ignore": false,
+    "code": "Fortune.prototype.listen = function() {\n  this.express.listen.apply(this.express, arguments);\n  console.log('A fortune is available on port ' + arguments[0] + '...');\n  return this;\n};",
+    "ctx": {
+      "type": "method",
+      "constructor": "Fortune",
+      "cons": "Fortune",
+      "name": "listen",
+      "string": "Fortune.prototype.listen()"
+    }
+  },
+  {
+    "tags": [
+      {
+        "type": "api",
+        "visibility": "private"
+      },
+      {
+        "type": "param",
+        "types": [
+          "String"
+        ],
+        "name": "name",
+        "description": ""
+      },
+      {
+        "type": "param",
+        "types": [
+          "Array"
+        ],
+        "name": "methods",
+        "description": ""
+      },
+      {
+        "type": "param",
+        "types": [
+          "Array"
+        ],
+        "name": "[routes]",
+        "description": ""
+      }
+    ],
+    "description": {
+      "full": "<p>Internal method to remove HTTP routes from a resource.</p>",
+      "summary": "<p>Internal method to remove HTTP routes from a resource.</p>",
+      "body": ""
+    },
+    "isPrivate": true,
+    "ignore": false,
+    "code": "Fortune.prototype._removeRoutes = function(name, methods, routes) {\n  var _this = this\n    , collection = inflect.pluralize(name)\n    , re = new RegExp('\\/' + collection);\n\n  this.adapter.awaitConnection().then(function() {\n    (methods || []).forEach(function(verb) {\n      var paths = _this.express.routes[verb];\n      paths.forEach(function(route, index) {\n        if(routes ? _.contains(routes, route.path) : re.test(route.path)) {\n          paths.splice(index, 1);\n        }\n      });\n    });\n  });\n};",
+    "ctx": {
+      "type": "method",
+      "constructor": "Fortune",
+      "cons": "Fortune",
+      "name": "_removeRoutes",
+      "string": "Fortune.prototype._removeRoutes()"
+    }
+  },
+  {
+    "tags": [
+      {
+        "type": "param",
+        "types": [
+          "String"
+        ],
+        "name": "[name]",
+        "description": "if no name is passed, the last defined resource is used."
+      },
+      {
+        "type": "return",
+        "types": [
+          "this"
+        ],
+        "description": ""
+      }
+    ],
+    "description": {
+      "full": "<p>Mark a resource as read-only, which destroys the routes<br />for <code>POST</code>, <code>PUT</code>, <code>PATCH</code>, and <code>DELETE</code> on that resource. The resource<br />can still be modified using adapter methods.</p>",
+      "summary": "<p>Mark a resource as read-only, which destroys the routes<br />for <code>POST</code>, <code>PUT</code>, <code>PATCH</code>, and <code>DELETE</code> on that resource. The resource<br />can still be modified using adapter methods.</p>",
+      "body": ""
+    },
+    "isPrivate": false,
+    "ignore": false,
+    "code": "Fortune.prototype.readOnly = function(name) {\n  if(typeof name != 'string') name = this._resource;\n  this._removeRoutes(name, ['post', 'put', 'patch', 'delete']);\n  return this;\n};",
+    "ctx": {
+      "type": "method",
+      "constructor": "Fortune",
+      "cons": "Fortune",
+      "name": "readOnly",
+      "string": "Fortune.prototype.readOnly()"
+    }
+  },
+  {
+    "tags": [
+      {
+        "type": "param",
+        "types": [
+          "String"
+        ],
+        "name": "[name]",
+        "description": "if no name is passed, the last defined resource is used."
+      },
+      {
+        "type": "return",
+        "types": [
+          "this"
+        ],
+        "description": ""
+      }
+    ],
+    "description": {
+      "full": "<p>Mark a resource as not having an index, which destroys the <code>GET</code> index.</p>",
+      "summary": "<p>Mark a resource as not having an index, which destroys the <code>GET</code> index.</p>",
+      "body": ""
+    },
+    "isPrivate": false,
+    "ignore": false,
+    "code": "Fortune.prototype.noIndex = function(name) {\n  if(typeof name != 'string') name = this._resource;\n  var index = this.options.namespace + '/' + inflect.pluralize(name);\n  this._removeRoutes(name, ['get'], [index]);\n  return this;\n};",
+    "ctx": {
+      "type": "method",
+      "constructor": "Fortune",
+      "cons": "Fortune",
+      "name": "noIndex",
+      "string": "Fortune.prototype.noIndex()"
+    }
+  },
+  {
+    "tags": [],
+    "description": {
+      "full": "<p>Namespace for the adapter.</p>",
+      "summary": "<p>Namespace for the adapter.</p>",
+      "body": ""
+    },
+    "ignore": false,
+    "code": "Fortune.prototype.adapter = {};",
+    "ctx": {
+      "type": "property",
+      "constructor": "Fortune",
+      "cons": "Fortune",
+      "name": "adapter",
+      "value": "{}",
+      "string": "Fortune.prototype.adapter"
+    }
+  },
+  {
+    "tags": [
+      {
+        "type": "api",
+        "visibility": "private"
+      }
+    ],
+    "description": {
+      "full": "<p>Store loaded schemas here.</p>",
+      "summary": "<p>Store loaded schemas here.</p>",
+      "body": ""
+    },
+    "isPrivate": true,
+    "ignore": false,
+    "code": "Fortune.prototype._schema = {};",
+    "ctx": {
+      "type": "property",
+      "constructor": "Fortune",
+      "cons": "Fortune",
+      "name": "_schema",
+      "value": "{}",
+      "string": "Fortune.prototype._schema"
+    }
+  },
+  {
+    "tags": [
+      {
+        "type": "api",
+        "visibility": "private"
+      }
+    ],
+    "description": {
+      "full": "<p>Store methods to transform input.</p>",
+      "summary": "<p>Store methods to transform input.</p>",
+      "body": ""
+    },
+    "isPrivate": true,
+    "ignore": false,
+    "code": "Fortune.prototype._before = {};",
+    "ctx": {
+      "type": "property",
+      "constructor": "Fortune",
+      "cons": "Fortune",
+      "name": "_before",
+      "value": "{}",
+      "string": "Fortune.prototype._before"
+    }
+  },
+  {
+    "tags": [
+      {
+        "type": "api",
+        "visibility": "private"
+      }
+    ],
+    "description": {
+      "full": "<p>Store methods to transform output.</p>",
+      "summary": "<p>Store methods to transform output.</p>",
+      "body": ""
+    },
+    "isPrivate": true,
+    "ignore": false,
+    "code": "Fortune.prototype._after = {};",
+    "ctx": {
+      "type": "property",
+      "constructor": "Fortune",
+      "cons": "Fortune",
+      "name": "_after",
+      "value": "{}",
+      "string": "Fortune.prototype._after"
+    }
+  },
+  {
+    "tags": [
+      {
+        "type": "api",
+        "visibility": "private"
+      }
+    ],
+    "description": {
+      "full": "<p>Method to route a resource.</p>",
+      "summary": "<p>Method to route a resource.</p>",
+      "body": ""
+    },
+    "isPrivate": true,
+    "ignore": false,
+    "code": "Fortune.prototype._route = route;",
+    "ctx": {
+      "type": "property",
+      "constructor": "Fortune",
+      "cons": "Fortune",
+      "name": "_route",
+      "value": "route",
+      "string": "Fortune.prototype._route"
+    }
+  },
+  {
+    "tags": [
+      {
+        "type": "api",
+        "visibility": "private"
+      }
+    ],
+    "description": {
+      "full": "<p>Keep track of the last added resource so that we can<br />chain methods that act on resources.</p>",
+      "summary": "<p>Keep track of the last added resource so that we can<br />chain methods that act on resources.</p>",
+      "body": ""
+    },
+    "isPrivate": true,
+    "ignore": false,
+    "code": "Fortune.prototype._resource = '';\n\n\n// Default Cross-Origin Resource Sharing setup.\nfunction allowCrossDomain(req, res, next) {\n  if(!req.get('Origin')) return next();\n  res.header('Access-Control-Allow-Origin', '*');\n  res.header('Access-Control-Allow-Headers', 'Accept, Content-Type, Authorization, X-Requested-With');\n  res.header('Access-Control-Allow-Methods', 'GET, PUT, POST, PATCH, DELETE');\n  res.header('Access-Control-Allow-Credentials', 'true');\n  // intercept OPTIONS method\n  if(req.method == 'OPTIONS') {\n    res.send(200);\n  } else {\n    next();\n  }\n}",
+    "ctx": {
+      "type": "property",
+      "constructor": "Fortune",
+      "cons": "Fortune",
+      "name": "_resource",
+      "value": "''",
+      "string": "Fortune.prototype._resource"
+    }
+  },
+  {
+    "tags": [
+      {
+        "type": "param",
+        "types": [
+          "Object"
+        ],
+        "name": "options",
+        "description": ""
+      }
+    ],
+    "description": {
+      "full": "<p>Create instance of Fortune.</p>",
+      "summary": "<p>Create instance of Fortune.</p>",
+      "body": ""
+    },
+    "isPrivate": false,
+    "ignore": true,
+    "code": "function create(options) {\n  return new Fortune(options);\n}\n\n// Expose create method.\nexports = module.exports = create;\n\n// Expose adapters.\nexports.adapters = Adapter.adapters;",
+    "ctx": {
+      "type": "function",
+      "name": "create",
+      "string": "create()"
+    }
+  }
+]
