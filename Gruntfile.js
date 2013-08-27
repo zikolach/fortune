@@ -46,7 +46,11 @@ module.exports = function(grunt) {
       compile: {
         cmd: function() {
           var commands = [];
-          commands.push('git clone git@github.com:daliwali/fortune.git');
+          if(grunt.file.isDir('fortune')) {
+            commands.push('cd fortune', 'git pull origin master', 'cd ..');
+          } else {
+            commands.push('git clone https://github.com/daliwali/fortune.git');
+          }
           ['fortune', 'adapter'].forEach(function(module) {
             commands.push(
               'dox < fortune/lib/' + module + '.js > docs/' + module + '.json'
@@ -61,6 +65,7 @@ module.exports = function(grunt) {
       options: {
         assets: 'dist',
         helpers: 'helpers/*.js',
+        layout: 'main.hbs',
         layoutdir: 'templates/layouts',
         partials: ['templates/partials/**/*.hbs'],
         data: ['docs/**/*.json'],
@@ -71,30 +76,18 @@ module.exports = function(grunt) {
         }
       },
       home: {
-        options: {
-          layout: 'main.hbs'
-        },
         src: ['templates/index.hbs'],
         dest: 'index.html'
       },
       docs: {
-        options: {
-          layout: 'main.hbs'
-        },
         src: ['templates/docs.hbs'],
         dest: 'docs/index.html'
       },
       guide: {
-        options: {
-          layout: 'main.hbs'
-        },
         src: ['templates/guide.hbs'],
         dest: 'guide/index.html'
       },
       404: {
-        options: {
-          layout: 'main.hbs'
-        },
         src: ['templates/404.hbs'],
         dest: '404.html'
       }
