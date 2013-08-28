@@ -401,7 +401,7 @@
     },
     "isPrivate": false,
     "ignore": false,
-    "code": "Adapter.prototype.awaitConnection = function() { return stubPromise(); };\n\n\nfunction stubPromise() {\n  console.warn('Warning: method not implemented.');\n  return new RSVP.Promise(function(resolve) {\n    resolve();\n  });\n}\n\nexports = module.exports = Adapter;\nexports.adapters = adapters;",
+    "code": "Adapter.prototype.awaitConnection = function() { return stubPromise(true); };\n\n\nfunction stubPromise(silent) {\n  if(!silent) console.warn('Warning: method not implemented.');\n  return new RSVP.Promise(function(resolve) {\n    resolve();\n  });\n}\n\nexports = module.exports = Adapter;\nexports.adapters = adapters;",
     "ctx": {
       "type": "method",
       "constructor": "Adapter",
