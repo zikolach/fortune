@@ -78,7 +78,7 @@
     },
     "isPrivate": true,
     "ignore": false,
-    "code": "Fortune.prototype._init = function(options) {\n\n  // Initialize options.\n  options = typeof options == 'object' ? options : {};\n  for(var key in this._defaults) {\n    if(!options.hasOwnProperty(key))\n      options[key] = this._defaults[key];\n  }\n  this.options = options;\n\n  // Create the underlying express framework instance.\n  this.express = express();\n\n  // Setup express.\n  if(typeof options.cors == 'boolean' && options.cors) {\n    this.express.use(allowCrossDomain);\n  }\n  this.express.disable('x-powered-by');\n  this.express.use(express.bodyParser());\n\n  // Create a database adapter instance.\n  this.adapter = new Adapter({\n    adapter: options.adapter,\n    host: options.host,\n    port: options.port,\n    db: options.db,\n    username: options.username,\n    password: options.password,\n    flags: options.flags\n  });\n\n};",
+    "code": "Fortune.prototype._init = function(options) {\n  var router;\n\n  // Initialize options.\n  options = typeof options == 'object' ? options : {};\n  for(var key in this._defaults) {\n    if(!options.hasOwnProperty(key))\n      options[key] = this._defaults[key];\n  }\n  this.options = options;\n\n  // Create the underlying express framework instance.\n  this.router = express();\n  router = this.router;\n\n  // Setup express.\n  if(typeof options.cors == 'boolean' && options.cors) {\n    router.use(allowCrossDomain);\n  }\n  router.disable('x-powered-by');\n  router.use(express.bodyParser());\n\n  // Create a database adapter instance.\n  this.adapter = new Adapter({\n    adapter: options.adapter,\n    host: options.host,\n    port: options.port,\n    db: options.db,\n    username: options.username,\n    password: options.password,\n    flags: options.flags\n  });\n\n};",
     "ctx": {
       "type": "method",
       "constructor": "Fortune",
@@ -381,7 +381,7 @@
     },
     "isPrivate": false,
     "ignore": false,
-    "code": "Fortune.prototype.use = function() {\n  this.express.use.apply(this.express, arguments);\n  return this;\n};",
+    "code": "Fortune.prototype.use = function() {\n  var router = this.router;\n  router.use.apply(router, arguments);\n  return this;\n};",
     "ctx": {
       "type": "method",
       "constructor": "Fortune",
@@ -415,7 +415,7 @@
     },
     "isPrivate": false,
     "ignore": false,
-    "code": "Fortune.prototype.listen = function() {\n  this.express.listen.apply(this.express, arguments);\n  console.log('A fortune is available on port ' + arguments[0] + '...');\n  return this;\n};",
+    "code": "Fortune.prototype.listen = function() {\n  var router = this.router;\n  router.listen.apply(router, arguments);\n  console.log('A fortune is available on port ' + arguments[0] + '...');\n  return this;\n};",
     "ctx": {
       "type": "method",
       "constructor": "Fortune",
@@ -462,7 +462,7 @@
     },
     "isPrivate": true,
     "ignore": false,
-    "code": "Fortune.prototype._removeRoutes = function(name, methods, routes) {\n  var _this = this\n    , collection = inflect.pluralize(name)\n    , re = new RegExp('\\/' + collection);\n\n  this.adapter.awaitConnection().then(function() {\n    (methods || []).forEach(function(verb) {\n      var paths = _this.express.routes[verb];\n      paths.forEach(function(route, index) {\n        if(routes ? _.contains(routes, route.path) : re.test(route.path)) {\n          paths.splice(index, 1);\n        }\n      });\n    });\n  });\n};",
+    "code": "Fortune.prototype._removeRoutes = function(name, methods, routes) {\n  var router = this.router\n    , collection = inflect.pluralize(name)\n    , re = new RegExp('\\/' + collection);\n\n  this.adapter.awaitConnection().then(function() {\n    (methods || []).forEach(function(verb) {\n      var paths = router.routes[verb];\n      paths.forEach(function(route, index) {\n        if(routes ? _.contains(routes, route.path) : re.test(route.path)) {\n          paths.splice(index, 1);\n        }\n      });\n    });\n  });\n};",
     "ctx": {
       "type": "method",
       "constructor": "Fortune",
@@ -537,6 +537,24 @@
       "cons": "Fortune",
       "name": "noIndex",
       "string": "Fortune.prototype.noIndex()"
+    }
+  },
+  {
+    "tags": [],
+    "description": {
+      "full": "<p>Namespace for the router, which is actually an instance of <code>express</code>.</p>",
+      "summary": "<p>Namespace for the router, which is actually an instance of <code>express</code>.</p>",
+      "body": ""
+    },
+    "ignore": false,
+    "code": "Fortune.prototype.router = {};",
+    "ctx": {
+      "type": "property",
+      "constructor": "Fortune",
+      "cons": "Fortune",
+      "name": "router",
+      "value": "{}",
+      "string": "Fortune.prototype.router"
     }
   },
   {
@@ -695,7 +713,7 @@
     },
     "isPrivate": false,
     "ignore": true,
-    "code": "function create(options) {\n  return new Fortune(options);\n}\n\n// Expose create method.\nexports = module.exports = create;\n\n// Expose adapters.\nexports.adapters = Adapter.adapters;",
+    "code": "function create(options) {\n  return new Fortune(options);\n}\n\n// Expose create method\nexports = module.exports = create;\n\n// Expose adapters.\nexports.adapters = Adapter.adapters;\n\n// Expose express framework\nexports.express = express;\n\n// Expose RSVP Promise library\nexports.RSVP = RSVP;",
     "ctx": {
       "type": "function",
       "name": "create",
