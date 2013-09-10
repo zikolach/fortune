@@ -13,11 +13,13 @@ Fortune is not a MVC framework, in the sense that there are no views or controll
 Let's get started by defining our application:
 
 ```javascript
-var fortune = require('fortune');
-var options = {
+var fortune = require('fortune')
+  , mongodb = require('fortune-mongodb');
+
+var app = fortune({
+  adapter: mongodb,
   db: 'demo_app'
-};
-var app = fortune(options);
+});
 ```
 
 *Note: the `options` object is [explained in detail in the documentation](/docs/#options).*
