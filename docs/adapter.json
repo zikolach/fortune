@@ -21,7 +21,7 @@
     },
     "isPrivate": false,
     "ignore": true,
-    "code": "function Adapter(options) {\n  var key;\n  if(\n    typeof options.adapter == 'string' &&\n    adapters.hasOwnProperty(options.adapter)\n  ) {\n    for(key in adapters[options.adapter]) {\n      this.__proto__[key] = adapters[options.adapter][key];\n    }\n  } else if(typeof options.adapter == 'object') {\n    for(key in options.adapter) {\n      this.__proto__[key] = options.adapter[key];\n    }\n  } else {\n    throw new Error('Missing or invalid database adapter.');\n  }\n  this._init(options);\n}",
+    "code": "function Adapter(options) {\n  var key, methods = {};\n  if(options.adapter) {\n    if(typeof options.adapter == 'string' && !!adapters[options.adapter]) {\n      methods = require(adapters[options.adapter]);\n    } else if(typeof options.adapter == 'object') {\n      methods = options.adapter;\n    }\n    for(key in methods) {\n      this.__proto__[key] = methods[key];\n    }\n  } else {\n    throw new Error('Missing or invalid database adapter.');\n  }\n  this._init(options);\n}",
     "ctx": {
       "type": "function",
       "name": "Adapter",
@@ -53,6 +53,10 @@
   },
   {
     "tags": [
+      {
+        "type": "api",
+        "visibility": "private"
+      },
       {
         "type": "param",
         "types": [
@@ -86,11 +90,11 @@
       }
     ],
     "description": {
-      "full": "<p>Transform fortune schema into a schema or model of the underlying adapter.</p>",
-      "summary": "<p>Transform fortune schema into a schema or model of the underlying adapter.</p>",
+      "full": "<p>Transform fortune schema into a schema or model of the underlying adapter. Although this method is actually called from another module, it should not be called manually, so it is marked as private.</p>",
+      "summary": "<p>Transform fortune schema into a schema or model of the underlying adapter. Although this method is actually called from another module, it should not be called manually, so it is marked as private.</p>",
       "body": ""
     },
-    "isPrivate": false,
+    "isPrivate": true,
     "ignore": false,
     "code": "Adapter.prototype.schema = function() {};",
     "ctx": {
@@ -103,6 +107,10 @@
   },
   {
     "tags": [
+      {
+        "type": "api",
+        "visibility": "private"
+      },
       {
         "type": "param",
         "types": [
@@ -128,11 +136,11 @@
       }
     ],
     "description": {
-      "full": "<p>Set up the underlying model. If no schema is passed, it returns an existing model.</p>",
-      "summary": "<p>Set up the underlying model. If no schema is passed, it returns an existing model.</p>",
+      "full": "<p>Set up the underlying model. If no schema is passed, it returns an existing model. Although this method is actually called from another module, it should not be called manually, so it is marked as private.</p>",
+      "summary": "<p>Set up the underlying model. If no schema is passed, it returns an existing model. Although this method is actually called from another module, it should not be called manually, so it is marked as private.</p>",
       "body": ""
     },
-    "isPrivate": false,
+    "isPrivate": true,
     "ignore": false,
     "code": "Adapter.prototype.model = function() {};",
     "ctx": {
