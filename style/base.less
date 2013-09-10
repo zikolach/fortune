@@ -2,6 +2,7 @@
  * Fortune.js website
  */
 
+// colors
 @background-color: #fff;
 @menu-color: #ededed;
 @border-color: darken(@menu-color, 12%);
@@ -13,16 +14,19 @@
 @tertiary-color: #FDF6DE;
 @quaternary-color: #d57762;
 
+// type
 @body-size: 16px;
-@body-type: Inconsolata, Courier New, Courier, monospace;
+@body-type: 'Inconsolata', 'Courier New', Courier, monospace;
 @alt-type: Georgia, 'Times New Roman', Times, serif;
 
+// layout
 @menu-width: 13em;
 @gutter-width: 1.5em;
 @line-height: 1.7em;
 @desktop-width: 62em;
 @tablet-width: 52em;
 
+// reset
 * {
 	.box-sizing;
 	margin: 0;
@@ -30,6 +34,7 @@
 	border: 0;
 }
 
+// import
 @import "mixins.less";
 @import "type.less";
 @import "layout.less";
