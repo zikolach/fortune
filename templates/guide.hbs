@@ -15,8 +15,7 @@ Let's get started by defining our application:
 ```javascript
 var fortune = require('fortune')
   , mongodb = require('fortune-mongodb');
-
-var app = fortune({
+  , app = fortune({
   adapter: mongodb,
   db: 'demo_app'
 });
