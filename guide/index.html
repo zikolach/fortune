@@ -101,19 +101,18 @@
             </p>
         </nav>
         <article>
-            <h2>Getting started with Fortune.js: this guide assumes that you already have <a href="http://nodejs.org">node.js</a> and <a href="http://mongodb.org">MongoDB</a> installed on your system.</h2>
+            <h2>Getting started with Fortune.js: this guide assumes that you already have <a href="http://nodejs.org">node.js</a> installed on your system.</h2>
             <hr>
             <p>Fortune is a web framework for prototyping rich hypermedia APIs. What does that mean? A few things: interactions with the API are oriented around manipulating resources, there are types of manipulations that take the form of HTTP verbs, and
                 the resources link to each other in a standardized, discoverable way (this concept is called <a href="http://en.wikipedia.org/wiki/HATEOAS">Hypertext As The Engine Of Application State</a>, or <em>HATEOAS</em> for short).</p>
             <p>Fortune is not a MVC framework, in the sense that there are no views or controllers to define. The &quot;view&quot; is simply a JSON response specified by the <a href="http://jsonapi.org">JSON API</a> specification. Controllers can be thought
                 of as the <em>before</em> and <em>after</em> transformations on a resource.</p>
             <p>Let&#39;s get started by defining our application:</p>
-            <pre><code class="language-javascript"><span class="keyword">var</span> fortune = require(<span class="string">'fortune'</span>)
-  , mongodb = require(<span class="string">'fortune-mongodb'</span>);
-  , app = fortune({
-  adapter: mongodb,
+            <pre><code class="language-javascript"><span class="keyword">var</span> fortune = require(<span class="string">'fortune'</span>);
+<span class="keyword">var</span> options = {
   db: <span class="string">'demo_app'</span>
-});</code></pre>
+};
+<span class="keyword">var</span> app = fortune(options);</code></pre>
             <p><em>Note: the <code>options</code> object is <a href="/docs/#options">explained in detail in the documentation</a>.</em>
             </p>
             <hr>
