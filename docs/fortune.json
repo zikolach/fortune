@@ -78,7 +78,7 @@
     },
     "isPrivate": true,
     "ignore": false,
-    "code": "Fortune.prototype._init = function(options) {\n  var router;\n\n  // Initialize options.\n  options = typeof options == 'object' ? options : {};\n  for(var key in this._defaults) {\n    if(!options.hasOwnProperty(key))\n      options[key] = this._defaults[key];\n  }\n  this.options = options;\n\n  // Create the underlying express framework instance.\n  this.router = express();\n  router = this.router;\n\n  // Setup express.\n  if(typeof options.cors == 'boolean' && options.cors) {\n    router.use(allowCrossDomain);\n  }\n  router.disable('x-powered-by');\n  router.use(express.bodyParser());\n\n  // Create a database adapter instance.\n  this.adapter = new Adapter({\n    adapter: options.adapter,\n    host: options.host,\n    port: options.port,\n    db: options.db,\n    username: options.username,\n    password: options.password,\n    flags: options.flags\n  });\n\n};",
+    "code": "Fortune.prototype._init = function(options) {\n  var router;\n\n  // Initialize options.\n  options = typeof options == 'object' ? options : {};\n  for(var key in this._defaults) {\n    if(!options.hasOwnProperty(key))\n      options[key] = this._defaults[key];\n  }\n  this.options = options;\n\n  // Create the underlying express framework instance.\n  this.router = express();\n  router = this.router;\n\n  // Setup express.\n  if(typeof options.cors == 'boolean' && options.cors) {\n    router.use(allowCrossDomain);\n  }\n  router.disable('x-powered-by');\n  router.use(express.bodyParser());\n\n  // Create a database adapter instance.\n  this.adapter = new Adapter(options);\n};",
     "ctx": {
       "type": "method",
       "constructor": "Fortune",
@@ -128,7 +128,7 @@
     },
     "isPrivate": false,
     "ignore": false,
-    "code": "Fortune.prototype.resource = function(name, schema, options) {\n  var _this = this;\n  name = inflect.underscore(name);\n\n  this._resource = name;\n  if(typeof schema != 'object') return this;\n  if(this.adapter.model(name)) {\n    console.warn('Warning: resource \"' + name + '\" was already defined.');\n    return this;\n  }\n\n  this.adapter.awaitConnection().then(function() {\n    schema = _this._scrubSchema(schema);\n\n    // Store a copy of the input.\n    _this._schema[name] = _.clone(schema);\n\n    try {\n      schema = _this.adapter.schema(name, schema, options);\n      _this._route(name, _this.adapter.model(name, schema));\n    } catch(error) {\n      console.trace('There was an error loading the \"' + name + '\" resource. ' + error);\n    }\n  }, function(error) {\n    throw error;\n  });\n  return this;\n};",
+    "code": "Fortune.prototype.resource = function(name, schema, options) {\n  var _this = this;\n\n  this._resource = name;\n  if(typeof schema != 'object') return this;\n  if(this.adapter.model(name)) {\n    console.warn('Warning: resource \"' + name + '\" was already defined.');\n    return this;\n  }\n\n  this.adapter.awaitConnection().then(function() {\n    schema = _this._scrubSchema(schema);\n\n    // Store a copy of the input.\n    _this._schema[name] = _.clone(schema);\n\n    try {\n      schema = _this.adapter.schema(name, schema, options);\n      _this._route(name, _this.adapter.model(name, schema));\n    } catch(error) {\n      console.trace('There was an error loading the \"' + name + '\" resource. ' + error);\n    }\n  }, function(error) {\n    throw error;\n  });\n  return this;\n};",
     "ctx": {
       "type": "method",
       "constructor": "Fortune",
@@ -160,8 +160,8 @@
       }
     ],
     "description": {
-      "full": "<p>Scrub invalid keys from a schema.</p>",
-      "summary": "<p>Scrub invalid keys from a schema.</p>",
+      "full": "<p>Scrub keys on a schema before passing it off to the adapter.</p>",
+      "summary": "<p>Scrub keys on a schema before passing it off to the adapter.</p>",
       "body": ""
     },
     "isPrivate": true,
