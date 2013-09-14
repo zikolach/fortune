@@ -67,9 +67,9 @@ Resources have two hooks for application-specific logic: `before` and `after`. *
 Suppose that we do not wish to reveal a `person`'s `lovers`:
 
 ```javascript
-app.after('person', function(resolve) {
+app.after('person', function(request) {
   delete this.links.lovers;
-  resolve(this);
+  return this;
 });
 ```
 
