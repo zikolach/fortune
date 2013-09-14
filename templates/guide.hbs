@@ -73,7 +73,7 @@ app.after('person', function(request) {
 });
 ```
 
-The callback function is called within the context of the resource, and it takes three arguments (only one is needed for this example): a function to resolve the resource, a function to reject the resource, and the request object. There is also a convenience method, *[transform](/docs/#transform)*, which defines both before & after simultaneously.
+The callback function is called within the context of the resource, and it has one parameter: the request object. There is also a convenience method, *[transform](/docs/#transform)*, which defines both before & after simultaneously.
 
 ---
 
